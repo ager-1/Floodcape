@@ -16,12 +16,13 @@ public class CameraFollow : MonoBehaviour
 
     void Start()
     {
+        // Capture the initial distance between camera and boat [cite: 2025-09-03]
         if (target != null)
         {
             _offset = transform.position - target.position;
         }
 
-        // Automatically find the camera component if not assigned
+        // Auto-assign the camera component if left empty in Inspector [cite: 2025-09-03]
         if (cam == null)
         {
             cam = GetComponent<Camera>();
@@ -37,21 +38,24 @@ public class CameraFollow : MonoBehaviour
     {
         if (target == null) return;
 
+        // Maintain the offset so the angle never changes [cite: 2025-09-03]
         Vector3 desiredPosition = target.position + _offset;
+
+        // Smoothly move to the new position to avoid physics jitter [cite: 2025-09-03]
         transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
     }
 
     void HandleZoom()
     {
-        // Get the scroll wheel input (usually returns -0.1 to 0.1)
+        // Get the mouse wheel input [cite: 2025-09-03]
         float scrollInput = Input.GetAxis("Mouse ScrollWheel");
 
         if (Mathf.Abs(scrollInput) > 0.01f)
         {
-            // Subtracting the input makes scrolling 'Up' zoom in (smaller size)
+            // Calculate new orthographic size [cite: 2025-09-03]
             float newSize = cam.orthographicSize - (scrollInput * zoomSpeed);
 
-            // Lock the value between 19 and 23
+            // Clamp the size between your requested 19 and 23 [cite: 2025-09-03]
             cam.orthographicSize = Mathf.Clamp(newSize, minSize, maxSize);
         }
     }
