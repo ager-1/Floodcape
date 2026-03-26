@@ -6,7 +6,7 @@ public class BoatController : MonoBehaviour
     [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private float turnSpeed = 180f;
     [Header("Wobble Settings")]
-    [SerializeField] private float wobbleAmount = 0.2f; /
+    [SerializeField] private float wobbleAmount = 0.2f;
     [SerializeField] private float wobbleSpeed = 2f;   
     private float _moveInput;
     private float _turnInput;
