@@ -35,13 +35,10 @@ public class CameraFollow : MonoBehaviour
     void LateUpdate()
     {
         if (target == null) return;
-
-        // Follow the current target while maintaining the isometric offset [cite: 2025-09-03]
         Vector3 desiredPosition = target.position + _offset;
         transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
     }
 
-    // Call this to swap between boat and bot [cite: 2025-09-03]
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
