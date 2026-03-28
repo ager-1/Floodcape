@@ -17,6 +17,10 @@ public class BoatController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI durabilityText;
     [SerializeField] private GameObject gameOverUI;
 
+    [Header("Crate Delivery Settings")]
+    [SerializeField] private GameObject[] deliveryCrates; // Assign the 3 child crates here
+    private int _currentCrateIndex = 2; // Tracks the top-most active crate (0, 1, 2)
+
     private float _moveInput;
     private float _turnInput;
     private float _startY;
@@ -27,6 +31,8 @@ public class BoatController : MonoBehaviour
         _startY = transform.position.y;
         UpdateUI();
 
+        ResetCrates();
+
         if (gameOverUI != null)
             gameOverUI.SetActive(false);
     }
@@ -35,86 +41,87 @@ public class BoatController : MonoBehaviour
     {
         if (_isDead)
         {
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
-            {
-                RestartGame();
-            }
+            if (Input.GetKeyDown(KeyCode.Return)) RestartGame();
             return;
         }
 
         _moveInput = Input.GetAxisRaw("Vertical");
         _turnInput = Input.GetAxisRaw("Horizontal");
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            DeliverCrate();
+        }
     }
 
     void FixedUpdate()
     {
         if (_isDead) return;
-
         ApplyRotation();
         ApplyMovement();
     }
 
-    void ApplyRotation()
+    void DeliverCrate()
     {
-        float rotationAmount = _turnInput * turnSpeed * Time.fixedDeltaTime;
-        Quaternion deltaRotation = Quaternion.Euler(0, 0, rotationAmount);
-        rb.MoveRotation(rb.rotation * deltaRotation);
+        if (_currentCrateIndex >= 0)
+        {
+            deliveryCrates[_currentCrateIndex].SetActive(false);
+            _currentCrateIndex--;
+            Debug.Log("Crate Delivered!");
+        }
+        else
+        {
+            Debug.Log("No crates left to deliver!");
+        }
     }
 
-    void ApplyMovement()
+    void ResetCrates()
     {
-        Vector3 moveDirection = transform.up * _moveInput;
-        Vector3 targetPosition = rb.position + (moveDirection * moveSpeed * Time.fixedDeltaTime);
-        float wobble = Mathf.Sin(Time.time * wobbleSpeed) * wobbleAmount;
-        targetPosition.y = _startY + wobble;
-
-        rb.MovePosition(targetPosition);
+        foreach (GameObject crate in deliveryCrates)
+        {
+            crate.SetActive(true);
+        }
+        _currentCrateIndex = deliveryCrates.Length - 1;
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("CrateSpawn"))
+        {
+            ResetCrates();
+            Debug.Log("Crates Restocked!");
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (_isDead) return;
-
-        if (collision.gameObject.CompareTag("Obstacle"))
+        if (!_isDead && collision.gameObject.CompareTag("Obstacle"))
         {
             TakeDamage(10);
         }
     }
+    void ApplyRotation()
+    {
+        float rotationAmount = _turnInput * turnSpeed * Time.fixedDeltaTime;
+        rb.MoveRotation(rb.rotation * Quaternion.Euler(0, 0, rotationAmount));
+    }
+
+    void ApplyMovement()
+    {
+        Vector3 targetPosition = rb.position + (transform.up * _moveInput * moveSpeed * Time.fixedDeltaTime);
+        targetPosition.y = _startY + (Mathf.Sin(Time.time * wobbleSpeed) * wobbleAmount);
+        rb.MovePosition(targetPosition);
+    }
 
     void TakeDamage(int amount)
     {
-        durability -= amount;
-        durability = Mathf.Clamp(durability, 0, 100);
+        durability = Mathf.Clamp(durability - amount, 0, 100);
         UpdateUI();
-
-        if (durability <= 0)
-        {
-            GameOver();
-        }
+        if (durability <= 0) GameOver();
     }
 
-    void UpdateUI()
-    {
-        if (durabilityText != null)
-        {
-            durabilityText.text = "Durability: " + durability;
-        }
-    }
+    void UpdateUI() { if (durabilityText != null) durabilityText.text = "Durability: " + durability; }
 
-    void GameOver()
-    {
-        _isDead = true;
-        if (gameOverUI != null)
-        {
-            gameOverUI.SetActive(true);
-        }
+    void GameOver() { _isDead = true; if (gameOverUI != null) gameOverUI.SetActive(true); rb.linearVelocity = Vector3.zero; }
 
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-    }
-
-    void RestartGame()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
+    void RestartGame() { SceneManager.LoadScene(SceneManager.GetActiveScene().name); }
 }
