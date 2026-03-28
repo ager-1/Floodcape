@@ -18,8 +18,8 @@ public class BoatController : MonoBehaviour
     [SerializeField] private GameObject gameOverUI;
 
     [Header("Crate Delivery Settings")]
-    [SerializeField] private GameObject[] deliveryCrates; // Assign the 3 child crates here
-    private int _currentCrateIndex = 2; // Tracks the top-most active crate (0, 1, 2)
+    [SerializeField] private GameObject[] deliveryCrates; 
+    private int _currentCrateIndex = 2; 
 
     private float _moveInput;
     private float _turnInput;
