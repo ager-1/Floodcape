@@ -6,8 +6,9 @@ public class PlayerSwitchManager : MonoBehaviour
     [SerializeField] private BoatController boatScript;
     [SerializeField] private BotController botScript;
 
-    [Header("Rigidbodies")]
+    [Header("Bot References")]
     [SerializeField] private Rigidbody botRigidbody;
+    [SerializeField] private Transform botDockPosition; // Assign "BotPosition" here
 
     [Header("Camera Pivots")]
     [SerializeField] private CameraFollow leftCamScript;
@@ -22,23 +23,50 @@ public class PlayerSwitchManager : MonoBehaviour
 
     void Update()
     {
+        // R to swap control [cite: 2025-09-03]
         if (Input.GetKeyDown(KeyCode.R))
         {
             _isControllingBoat = !_isControllingBoat;
             UpdateControlState();
         }
+
+        // Q to recall the bot to the boat [cite: 2025-09-03]
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            RecallBot();
+        }
     }
 
     void UpdateControlState()
     {
-        // Toggle movement scripts [cite: 2025-09-03]
         boatScript.enabled = _isControllingBoat;
         botScript.enabled = !_isControllingBoat;
 
-        // Handle Bot docking/kinematic state [cite: 2025-09-03]
+        // Kinematic handles whether the bot is free or attached [cite: 2025-09-03]
         botRigidbody.isKinematic = _isControllingBoat;
 
-        // Update both cameras to follow the current active transform [cite: 2025-09-03]
+        UpdateCameraTargets();
+    }
+
+    void RecallBot()
+    {
+        // 1. Force control back to the boat [cite: 2025-09-03]
+        _isControllingBoat = true;
+        UpdateControlState();
+
+        // 2. Snap the bot to the empty parent "BotPosition"
+        if (botDockPosition != null)
+        {
+            // Reset local position and rotation to align with the parent [cite: 2025-09-03]
+            botRigidbody.transform.localPosition = Vector3.zero;
+            botRigidbody.transform.localRotation = Quaternion.identity;
+
+            Debug.Log("Bot Recalled to Dock"); 
+        }
+    }
+
+    void UpdateCameraTargets()
+    {
         Transform currentTarget = _isControllingBoat ? boatScript.transform : botScript.transform;
 
         if (leftCamScript != null) leftCamScript.SetTarget(currentTarget);
