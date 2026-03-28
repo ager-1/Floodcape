@@ -367,7 +367,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 296e10279c6a21548b6160a3ae7392af, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12.58
+      value: 10.45
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 296e10279c6a21548b6160a3ae7392af, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2806,7 +2806,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 296e10279c6a21548b6160a3ae7392af, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 14.07
+      value: 11.94
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 296e10279c6a21548b6160a3ae7392af, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3424,7 +3424,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 296e10279c6a21548b6160a3ae7392af, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.050001
+      value: 7.920001
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 296e10279c6a21548b6160a3ae7392af, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4889,7 +4889,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 296e10279c6a21548b6160a3ae7392af, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12.89
+      value: 10.76
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 296e10279c6a21548b6160a3ae7392af, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5320,7 +5320,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 296e10279c6a21548b6160a3ae7392af, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15.1
+      value: 12.97
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 296e10279c6a21548b6160a3ae7392af, type: 3}
       propertyPath: m_LocalPosition.y
@@ -6110,7 +6110,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 296e10279c6a21548b6160a3ae7392af, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.449999
+      value: 9.319999
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 296e10279c6a21548b6160a3ae7392af, type: 3}
       propertyPath: m_LocalPosition.y
