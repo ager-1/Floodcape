@@ -8,6 +8,7 @@ TagManager:
   - CrateSpawn
   - SafeZone
   - Human
+  - WaterNeeded
   layers:
   - Default
   - TransparentFX
