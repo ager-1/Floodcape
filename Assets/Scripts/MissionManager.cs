@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement; // Required for scene transitions [cite: 2025-09-03]
 
 public class MissionManager : MonoBehaviour
 {
@@ -11,10 +12,14 @@ public class MissionManager : MonoBehaviour
 
     [Header("Total Progress")]
     [SerializeField] private int totalRescued = 0;
+    [SerializeField] private int targetToWin = 15; // The number needed to change scenes [cite: 2025-09-03]
+
+    [Header("Scene Management")]
+    [SerializeField] private string nextSceneName; // Type the name of your next level here [cite: 2025-09-03]
 
     [Header("UI References")]
-    [SerializeField] private TextMeshProUGUI boatCountText; // Shows "On Boat: 0/3"
-    [SerializeField] private TextMeshProUGUI totalRescuedText; // Shows "Total Rescued: 0"
+    [SerializeField] private TextMeshProUGUI boatCountText;
+    [SerializeField] private TextMeshProUGUI totalRescuedText;
 
     void Awake()
     {
@@ -26,7 +31,6 @@ public class MissionManager : MonoBehaviour
         UpdateUI();
     }
 
-    // Called by the Bot when dropping a human onto the boat [cite: 2025-09-03]
     public bool TryAddHumanToBoat()
     {
         if (humansOnBoat < maxBoatCapacity)
@@ -38,19 +42,33 @@ public class MissionManager : MonoBehaviour
         return false;
     }
 
-    // Called by the Boat when entering the SafeZone [cite: 2025-09-03]
     public void DeliverToSafeZone()
     {
         if (humansOnBoat > 0)
         {
-            // Add the current boat load to the total score [cite: 2025-09-03]
             totalRescued += humansOnBoat;
-
-            // Reset the boat's current load to zero [cite: 2025-09-03]
             humansOnBoat = 0;
-
             UpdateUI();
-            Debug.Log("SafeZone: Humans delivered! Total Rescued: " + totalRescued); 
+
+            Debug.Log("SafeZone: Humans delivered! Total Rescued: " + totalRescued);
+
+            // Check if win condition is met [cite: 2025-09-03]
+            if (totalRescued >= targetToWin)
+            {
+                ChangeScene();
+            }
+        }
+    }
+
+    private void ChangeScene()
+    {
+        if (!string.IsNullOrEmpty(nextSceneName))
+        {
+            SceneManager.LoadScene(nextSceneName); 
+        }
+        else
+        {
+            Debug.LogError("Next Scene Name is missing in MissionManager Inspector!"); 
         }
     }
 
@@ -58,12 +76,24 @@ public class MissionManager : MonoBehaviour
     {
         if (boatCountText != null)
         {
-            boatCountText.text = "Humans On Boat: " + humansOnBoat + "/" + maxBoatCapacity; 
+            boatCountText.text = "Humans On Boat: " + humansOnBoat + "/" + maxBoatCapacity;
         }
 
         if (totalRescuedText != null)
         {
-            totalRescuedText.text = "Total Humans Rescued: " + totalRescued; 
+            totalRescuedText.text = "Total Humans Rescued: " + totalRescued;
         }
+    }
+
+    public void CompleteWaterDelivery(GameObject human, GameObject waterIcon)
+    {
+        human.tag = "Human";
+
+        if (waterIcon != null)
+        {
+            waterIcon.SetActive(false);
+        }
+
+        Debug.Log("Water Delivered! Human is now ready for rescue.");
     }
 }
