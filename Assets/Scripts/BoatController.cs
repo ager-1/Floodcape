@@ -4,6 +4,11 @@ using UnityEngine.SceneManagement;
 
 public class BoatController : MonoBehaviour
 {
+    [Header("Human Transport")]
+    [SerializeField] private int humanCount = 0;
+    [SerializeField] private int maxHumans = 3;
+    [SerializeField] private TextMeshProUGUI humanCountText;
+
     [SerializeField] private Rigidbody rb;
     [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private float turnSpeed = 180f;
@@ -90,6 +95,12 @@ public class BoatController : MonoBehaviour
             ResetCrates();
             Debug.Log("Crates Restocked!");
         }
+        if (other.CompareTag("SafeZone"))
+        {
+            humanCount = 0;
+            UpdateHumanUI();
+            Debug.Log("Humans Rescued!");
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -119,9 +130,29 @@ public class BoatController : MonoBehaviour
         if (durability <= 0) GameOver();
     }
 
+
     void UpdateUI() { if (durabilityText != null) durabilityText.text = "Durability: " + durability; }
 
     void GameOver() { _isDead = true; if (gameOverUI != null) gameOverUI.SetActive(true); rb.linearVelocity = Vector3.zero; }
 
     void RestartGame() { SceneManager.LoadScene(SceneManager.GetActiveScene().name); }
+
+    public bool AddHuman()
+    {
+        if (humanCount < maxHumans)
+        {
+            humanCount++;
+            UpdateHumanUI();
+            return true; // Tells the bot the transfer was successful [cite: 2025-09-03]
+        }
+        return false; // Tells the bot the boat is full [cite: 2025-09-03]
+    }
+    void UpdateHumanUI()
+    {
+        if (humanCountText != null)
+        {
+            humanCountText.text = "Humans: " + humanCount + "/" + maxHumans; 
+    }
+    }
+
 }
