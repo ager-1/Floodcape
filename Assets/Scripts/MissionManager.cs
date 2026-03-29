@@ -20,6 +20,16 @@ public class MissionManager : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private TextMeshProUGUI boatCountText;
     [SerializeField] private TextMeshProUGUI totalRescuedText;
+    [SerializeField] private string mainMenuSceneName = "mainMenu"; // Match your scene name exactly [cite: 2026-03-30]
+
+    void Update()
+    {
+        // Check if the Escape key is pressed [cite: 2026-03-30]
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ReturnToMainMenu();
+        }
+    }
 
     void Awake()
     {
@@ -95,5 +105,19 @@ public class MissionManager : MonoBehaviour
         }
 
         Debug.Log("Water Delivered! Human is now ready for rescue.");
+    }
+    public void ReturnToMainMenu()
+    {
+        Debug.Log("Escaped Level 1. Returning to Menu..."); 
+        
+        // Ensure the scene is in Build Settings [cite: 2026-03-30]
+        if (!string.IsNullOrEmpty(mainMenuSceneName))
+        {
+            SceneManager.LoadScene(mainMenuSceneName); 
+        }
+        else
+        {
+            Debug.LogError("Main Menu scene name is not set!"); 
+        }
     }
 }
