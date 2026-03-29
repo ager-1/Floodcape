@@ -9420,6 +9420,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4468062674339201805, guid: 0edff9b5c5e5ed54f8ad6ed492c929c7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 6282d2dca5b4f704284ca5dae8e8efaa, type: 2}
     - target: {fileID: 8128668236925612103, guid: 0edff9b5c5e5ed54f8ad6ed492c929c7, type: 3}
       propertyPath: m_Name
       value: low_poly_helicopter
