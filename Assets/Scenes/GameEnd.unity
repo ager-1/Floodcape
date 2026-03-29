@@ -18206,7 +18206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01ae9c97c3509074b8afc912dd5f6819, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WinScreenManager
-  winPanel: {fileID: 1134538619}
+  winPanel: {fileID: 2038018463}
   delayTime: 4
   mainMenuName: mainMenu
 --- !u!4 &1463686817
@@ -23826,7 +23826,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2038018464
 MonoBehaviour:
   m_ObjectHideFlags: 0
