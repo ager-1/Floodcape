@@ -8,7 +8,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject controlsPanel;
 
     [Header("Scene Settings")]
-    [SerializeField] private string gameSceneName = "GameScene"; 
+    [SerializeField] private string gameSceneName = "Level1"; 
 
     void Start()
     {
