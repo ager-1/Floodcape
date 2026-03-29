@@ -8,7 +8,7 @@ public class BotController : MonoBehaviour
     [SerializeField] private float verticalSpeed = 5f;
 
     [Header("Rescue Settings")]
-    [SerializeField] private Transform holdPoint; // Empty object under Bot where human hangs
+    [SerializeField] private Transform holdPoint;
     private GameObject _carriedHuman;
 
     private float _moveInput, _turnInput, _verticalInput;
@@ -23,17 +23,21 @@ public class BotController : MonoBehaviour
         if (Input.GetKey(KeyCode.Space)) _verticalInput = 1;
         else if (Input.GetKey(KeyCode.LeftShift)) _verticalInput = -1;
 
-        // Press G to grab human
         if (Input.GetKeyDown(KeyCode.G) && _carriedHuman == null)
         {
             TryGrabHuman();
+        }
+
+        // Check for delivery every frame if we are carrying someone
+        // This bypasses the need for physical collisions [cite: 2025-09-03]
+        if (_carriedHuman != null)
+        {
+            CheckForBoatDelivery();
         }
     }
 
     void TryGrabHuman()
     {
-        // We use a larger OverlapBox to catch flat sprites more easily [cite: 2025-09-03]
-        // The 5f, 5f, 5f creates a generous hit zone around the bot [cite: 2025-09-03]
         Collider[] hits = Physics.OverlapBox(transform.position, new Vector3(5f, 5f, 5f));
 
         foreach (var hit in hits)
@@ -42,31 +46,33 @@ public class BotController : MonoBehaviour
             {
                 _carriedHuman = hit.gameObject;
                 _carriedHuman.transform.SetParent(holdPoint);
-
-                // Snap the human to the bot's hanging point [cite: 2025-09-03]
                 _carriedHuman.transform.localPosition = Vector3.zero;
 
-                // Critical: Disable the human's collider so it doesn't 
-                // hit the bot's own collider while being carried [cite: 2025-09-03]
                 if (_carriedHuman.TryGetComponent<BoxCollider>(out BoxCollider hCol))
                     hCol.enabled = false;
 
-                Debug.Log("Human Grabbed!"); 
-            break;
+                Debug.Log("Human Grabbed!");
+                break;
             }
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    void CheckForBoatDelivery()
     {
-        // If bot touches the boat while carrying someone, drop them into the boat
-        if (other.CompareTag("Player") && _carriedHuman != null)
+        Collider[] closeObjects = Physics.OverlapBox(transform.position, new Vector3(4f, 4f, 4f));
+
+        foreach (var hit in closeObjects)
         {
-            BoatController boat = other.GetComponent<BoatController>();
-            if (boat != null && boat.AddHuman())
+            if (hit.CompareTag("Player"))
             {
-                Destroy(_carriedHuman); // Remove the physical human as they are now "in" the boat
-                _carriedHuman = null;
+                // FIX: Changed TryAddHuman() to TryAddHumanToBoat() to match MissionManager [cite: 2025-09-03]
+                if (MissionManager.Instance != null && MissionManager.Instance.TryAddHumanToBoat())
+                {
+                    Destroy(_carriedHuman);
+                    _carriedHuman = null;
+                    Debug.Log("Human delivered to MissionManager!");
+                    break;
+                }
             }
         }
     }
@@ -91,31 +97,6 @@ public class BotController : MonoBehaviour
         targetPos.y = Mathf.Clamp(targetPos.y, _minH, _maxH);
         rb.MovePosition(targetPos);
     }
-    private void OnCollisionEnter(Collision collision)
-    {
-        // If we are carrying someone and we bump into the Boat [cite: 2025-09-03]
-        if (_carriedHuman != null && collision.gameObject.CompareTag("Player"))
-        {
-            // Try to find the BoatController on the object we hit [cite: 2025-09-03]
-            BoatController boat = collision.gameObject.GetComponent<BoatController>();
 
-            if (boat != null)
-            {
-                // Try to add the human to the boat's internal counter [cite: 2025-09-03]
-                bool success = boat.AddHuman();
-
-                if (success)
-                {
-                    // If the boat had room, delete the 2D sprite from the bot [cite: 2025-09-03]
-                    Destroy(_carriedHuman);
-                    _carriedHuman = null;
-                    Debug.Log("Human delivered to boat!"); 
-            }
-                else
-                {
-                    Debug.Log("Boat is full! Go to SafeZone first.");
-            }
-            }
-        }
-    }
+    // Removed OnTriggerEnter and OnCollisionEnter as CheckForBoatDelivery handles it now
 }

@@ -97,9 +97,8 @@ public class BoatController : MonoBehaviour
         }
         if (other.CompareTag("SafeZone"))
         {
-            humanCount = 0;
-            UpdateHumanUI();
-            Debug.Log("Humans Rescued!");
+            // Tell the manager to move humans from the boat to the total score [cite: 2025-09-03]
+            MissionManager.Instance.DeliverToSafeZone();
         }
     }
 
