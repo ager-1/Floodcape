@@ -66,4 +66,17 @@ public class MissionManager : MonoBehaviour
             totalRescuedText.text = "Total Humans Rescued: " + totalRescued; 
         }
     }
+    public void CompleteWaterDelivery(GameObject human, GameObject waterIcon)
+    {
+        // 1. Change tag to "Human" so the Bot can now pick them up [cite: 2025-09-03]
+        human.tag = "Human";
+
+        // 2. Hide the water symbol [cite: 2025-09-03]
+        if (waterIcon != null)
+        {
+            waterIcon.SetActive(false);
+        }
+
+        Debug.Log("Water Delivered! Human is now ready for rescue."); 
+    }
 }
